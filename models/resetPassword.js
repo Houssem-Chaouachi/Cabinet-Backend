@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const scheama = mongoose.Schema
 
-const resettokenSchema = new mongoose.Schema({
+const resettokenSchema = new scheama({
 
     _userId: {
         type: mongoose.Schema.Types.ObjectId,

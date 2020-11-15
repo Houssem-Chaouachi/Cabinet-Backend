@@ -6,7 +6,7 @@ const passwordResetToken = require('../models/resetPassword');
 const router = require('./patientsApi');
 
 
-router.post('/req-reset-password', async  (req, res) => {
+router.post('/req-reset-password', async (req, res) => {
     if (!req.body.email) {
         return res.status(500).json({
             message: 'Email is required'
@@ -14,7 +14,7 @@ router.post('/req-reset-password', async  (req, res) => {
     }
     const user = await Patient.findOne({
         email: req.body.email
-    
+
     });
     console.log(user);
     if (!user) {
@@ -63,9 +63,8 @@ router.post('/req-reset-password', async  (req, res) => {
                 res.send({ message: "email error" })
 
             } else {
-                console.log('this is the token ',resettoken);
                 res.send({ message: "email send succesfully" })
-               
+
             };
         });
     });
@@ -97,48 +96,51 @@ router.post('/valid-password-token', async (req, res) => {
         });
     });
 }),
-router.post('/new-password', async (req, res) => {
-    passwordResetToken.findOne({
-        resettoken: req.body.resettoken
-    },
-        function (err, userToken, next) {
-            if (!userToken) {
-                return res.status(409).json({
-                    message: 'Token has expired'
-                });
-            }
-            Patient.findOne({
-                _id: userToken._userId
-            },
-                function (err, userEmail, next) {
-                    if (!userEmail) {
+    router.post('/new-password', async (req, res) => {
+        passwordResetToken.findOne({
+            resettoken: req.body.resettoken
+        },
+            function (err, userToken, next) {
+                if (!userToken) {
+                    return res.status(409).json({
+                        message: 'Token has expired'
+                    });
+                }
+                Patient.findOne({
+                    _id: userToken._userId
+                },
+                    function (err, userEmail, next) {
+                        if (!userEmail) {
 
-                        return res.status(409).json({
-                            message: 'User does not exist'
-                        });
-                    }
-                    return bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
-                        if (err) {
-                            return res.status(400).json({
-                                message: 'Error hashing password'
+                            return res.status(409).json({
+                                message: 'User does not exist'
                             });
                         }
-                        userEmail.password = hash;
-                        userEmail.save(function (err) {
+                        return bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
                             if (err) {
                                 return res.status(400).json({
-                                    message: 'Password can not reset.'
-                                });
-                            } else {
-                                userToken.remove();
-                                return res.status(201).json({
-                                    message: 'Password reset successfully'
+                                    message: 'Error hashing password'
                                 });
                             }
+                            userEmail.password = hash;
+                            // Patient.findByIdAndUpdate({
+                            //     password: userEmail.password
+                            // })
+                            userEmail.save(function (err) {
+                                if (err) {
+                                    return res.status(400).json({
+                                        message: 'Password can not reset.'
+                                    });
+                                } else {
+                                    userToken.remove();
+                                    return res.status(201).json({
+                                        message: 'Password reset successfully'
+                                    });
+                                }
+                            });
                         });
                     });
-                });
-        })
-}  )
+            })
+    })
 
-module.exports= router
+module.exports = router

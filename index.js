@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const passport =require('passport')
 const patientApi = require('./routes/patientsApi');
 const secretaireApi = require('./routes/secretairesApi');
-const resetPassApi = require ('./routes/resetPassApi')
+const rdvMail = require('./routes/RdvMail');
+const resetPassApi = require ('./routes/resetPassApi');
 const db = require('./database/database');
 const cors = require('cors');
 require('./Config/passport')(passport);
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors());
 
+app.use('/send-Rdv-time', rdvMail);
 app.use('/secretaires', secretaireApi);
 app.use('/patients', patientApi);
 app.use('/email', resetPassApi)

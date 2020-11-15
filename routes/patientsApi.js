@@ -4,18 +4,21 @@ const Patient = require('../models/patientScheama');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const passwordResetToken = require('../models/resetPassword');
+require('../Config/passport')(passport);
 
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('jwt', {session:false}), (req, res) => {
     Patient.find({}).then((listPatient) => {
         res.send(listPatient);
     }
     );
 });
 
-router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/:id', passport.authenticate('jwt', {session:false}), async (req, res) => {
+    const patient = await Patient.findById(req.params.id)
+    res.send(patient);
+} )
+
+router.post('/', (req, res) => {
     // les promisse (then)  (recommender)
     Patient.create(req.body).then((createdUser) => {
         res.send(createdUser);

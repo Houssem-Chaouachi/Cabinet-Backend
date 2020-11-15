@@ -4,6 +4,7 @@ const secretaire = require('../models/secretaireScheama');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+require('../Config/passport')(passport);
 
 router.get('/',  (req,res) => {
         secretaire.find({}).then ((listSecretaires) => {
@@ -11,7 +12,14 @@ router.get('/',  (req,res) => {
         console.log(listSecretaires);
     });
 });
-router.post('/', (req,res) => {
+
+router.get('/:id',  async (req, res) => {
+    // async / await   (recommender)
+    const sec = await secretaire.findById(req.params.id).populate('patients');
+    res.send(sec.patients);
+   
+});
+router.post('/', passport.authenticate('jwt', {session:false}), (req,res) => {
     secretaire.create(req.body).then ((createSecretaires) => {
         res.send(createSecretaires)
     });
