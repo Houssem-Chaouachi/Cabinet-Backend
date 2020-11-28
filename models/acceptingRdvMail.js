@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const scheama = mongoose.Schema;
 const acceptingRdv = new scheama ({
    
-    emailPatient:{
+    email:{
         type:String,
         required:true,
     },
     day: {
-        type: Date,
+        type: String,
         required:true
     },
     hour: {
-        type: Date,
+        type: String,
         required: true
     }
 
