@@ -42,9 +42,9 @@ router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
     });
 });
 
-router.delete('/remove-patients-from-secretaire/:idSecretaire/:idPatients', passport.authenticate('jwt', { session: false }), (req, res) => {
-    secretaire.findByIdAndUpdate({ _id: req.params.idSecretaire }, { $pull: { patients: req.params.idPatients } }).then(() => {
-        secretaire.findOne({ _id: req.params.idSecretaire }).then((removedPatient) => {
+router.delete('/remove-patients-from-secretaire/:idPatients',  (req, res) => {
+    secretaire.findOneAndUpdate({ $pull: { patients: req.params.idPatients } }).then(() => {
+        secretaire.findOne().then((removedPatient) => {
             res.send(removedPatient);
 
         });
