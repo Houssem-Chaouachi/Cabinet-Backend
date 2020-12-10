@@ -24,10 +24,16 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
         res.send(createSecretaires)
     });
 });
+router.delete('/:id', async(req, res)=>{
+    await secretaire.findByIdAndRemove(req.params.id, (err, resultat)=>{
+        if(err) res.send(err);
+      res.send(resultat);
+    })
+})
 // get 
-router.post('/affect-patients-to-secretaire/:idsecretaire/:idpatients', (req, res) => {
-    secretaire.findByIdAndUpdate({ _id: req.params.idsecretaire }, { $push: { patients: req.params.idpatients }}).then(() => {
-        secretaire.findOne({ _id: req.params.idsecretaire, }).then((secretaire) => {
+router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
+    secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
+        secretaire.findOne().then((secretaire) => {
             res.send(secretaire);
         })
         res.send(secretaires);

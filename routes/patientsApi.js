@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('../Config/passport')(passport);
 
-router.get('/', passport.authenticate('jwt', {session:false}), (req, res) => {
+router.get('/',  (req, res) => {
     Patient.find({}).then((listPatient) => {
         res.send(listPatient);
     }
