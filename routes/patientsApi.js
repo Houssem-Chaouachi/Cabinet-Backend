@@ -16,7 +16,7 @@ router.get('/',  (req, res) => {
 router.get('/:id', passport.authenticate('jwt', {session:false}), async (req, res) => {
     const patient = await Patient.findById(req.params.id)
     res.send(patient);
-} )
+} );
 
 router.post('/', (req, res) => {
     // les promisse (then)  (recommender)

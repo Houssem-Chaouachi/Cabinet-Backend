@@ -3,6 +3,7 @@ const router = express.Router();
 const mail = require('nodemailer');
 const Rdv = require('../models/acceptingRdvMail');
 const patient = require('../models/patientScheama');
+const secretaire = require('../models/secretaireScheama')
 const { route } = require('./secretairesApi');
 
 
@@ -47,13 +48,18 @@ router.post('', async (req, res) => {
             console.log(err);
             res.send({ message: "email error" })
 
-        } else {
-            res.send({ message: "email send succesfully" })
-
+        } else {        
+                secretaire.findOneAndUpdate({ $pull: { patients: user._id} }).then(() => {
+                    secretaire.findOne().then((removedPatient) => {
+                        res.send(removedPatient);
+            console.log('useeeeer iddd',user._id);
+                    });
+                })
         };
     });
  
 });
+
 
 router.get('/listeRdv', (req, res) => {
     Rdv.find({}).then((listeRdv) => {

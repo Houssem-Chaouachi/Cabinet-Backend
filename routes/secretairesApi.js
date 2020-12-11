@@ -6,52 +6,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 require('../Config/passport')(passport);
 
-router.get('/', (req, res) => {
-    secretaire.find({}).then((listSecretaires) => {
-        res.send(listSecretaires),
-            console.log(listSecretaires);
-    });
-});
-
-router.get('/:id', async (req, res) => {
-    // async / await   (recommender)
-    const sec = await secretaire.findById(req.params.id).populate('patients');
-    res.send(sec.patients);
-
-});
-router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    secretaire.create(req.body).then((createSecretaires) => {
-        res.send(createSecretaires)
-    });
-});
-router.delete('/:id', async(req, res)=>{
-    await secretaire.findByIdAndRemove(req.params.id, (err, resultat)=>{
-        if(err) res.send(err);
-      res.send(resultat);
-    })
-})
-// get 
-router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
-    secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
-        secretaire.findOne().then((secretaire) => {
-            res.send(secretaire);
-        })
-        res.send(secretaires);
-
-
-    });
-});
-
-router.delete('/remove-patients-from-secretaire/:idPatients',  (req, res) => {
-    secretaire.findOneAndUpdate({ $pull: { patients: req.params.idPatients } }).then(() => {
-        secretaire.findOne().then((removedPatient) => {
-            res.send(removedPatient);
-
-        });
-    })
-})
-
-
 //  login
 router.post('/login', (req, res) => {
     const email = req.body.email;
@@ -108,6 +62,49 @@ router.post('/register', (req, res) => {
         });
     });
 });
+router.get('/', (req, res) => {
+    secretaire.find({}).then((listSecretaires) => {
+        res.send(listSecretaires),
+            console.log(listSecretaires);
+    });
+});
+
+router.get('/request-from-patients', async (req, res) => {
+    // async / await   (recommender)
+    const sec = await secretaire.findOne({}).populate('patients');
+    res.send(sec.patients);
+
+});
+
+router.delete('/:id', async(req, res)=>{
+    await secretaire.findByIdAndRemove(req.params.id, (err, resultat)=>{
+        if(err) res.send(err);
+      res.send(resultat);
+    })
+});
+
+// get 
+router.post('/affect-patients-to-secretaire/:idpatients',  (req, res) => {
+    secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
+        secretaire.findOne().then((secretaire) => {            
+            res.send(secretaire);
+            console.log(secretaire.patients);
+        });
+
+
+    });
+});
+
+router.delete('/remove-patients-from-secretaire/:idPatients',   (req, res) => {
+    secretaire.findOneAndUpdate({ $pull: { patients: req.params.idPatients } }).then(() => {
+        secretaire.findOne().then((removedPatient) => {
+            res.send(removedPatient);
+
+        });
+    })
+})
+
+
 
 //profile
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -116,3 +113,4 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
 });
 
 module.exports = router
+
