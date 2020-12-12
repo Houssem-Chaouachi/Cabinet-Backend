@@ -13,7 +13,7 @@ router.get('/',  (req, res) => {
     );
 });
 
-router.get('/:id', passport.authenticate('jwt', {session:false}), async (req, res) => {
+router.get('/:id',  async (req, res) => {
     const patient = await Patient.findById(req.params.id)
     res.send(patient);
 } );
@@ -41,7 +41,7 @@ router.post('/login', (req, res) => {
             }
             console.log(isMatch);
             if (isMatch) {
-                const token = jwt.sign(user.toJSON(), 'abcd', {
+                const token = jwt.sign(user.toJSON(), 'token', {
                     expiresIn: 604800 //1 week
                 });
 

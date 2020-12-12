@@ -23,7 +23,7 @@ router.post('/login', (req, res) => {
             }
             console.log(isMatch);
             if (isMatch) {
-                const token = jwt.sign(superUser.toJSON(), 'efgh', {
+                const token = jwt.sign(superUser.toJSON(), 'token', {
                     expiresIn: 604800 //1 week
                 });
 
@@ -62,21 +62,21 @@ router.post('/register', (req, res) => {
         });
     });
 });
-router.get('/', (req, res) => {
+router.get('/',   (req, res) => {
     secretaire.find({}).then((listSecretaires) => {
         res.send(listSecretaires),
             console.log(listSecretaires);
     });
 });
 
-router.get('/request-from-patients', async (req, res) => {
+router.get('/request-from-patients',  async (req, res) => {
     // async / await   (recommender)
     const sec = await secretaire.findOne({}).populate('patients');
     res.send(sec.patients);
 
 });
 
-router.delete('/:id', async(req, res)=>{
+router.delete('/:id',  passport.authenticate('jwt', { session: false }),async(req, res)=>{
     await secretaire.findByIdAndRemove(req.params.id, (err, resultat)=>{
         if(err) res.send(err);
       res.send(resultat);
@@ -84,7 +84,7 @@ router.delete('/:id', async(req, res)=>{
 });
 
 // get 
-router.post('/affect-patients-to-secretaire/:idpatients',  (req, res) => {
+router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
     secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
         secretaire.findOne().then((secretaire) => {            
             res.send(secretaire);
