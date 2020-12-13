@@ -6,19 +6,19 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('../Config/passport')(passport);
 
-router.get('/',  (req, res) => {
+router.get('/',  passport.authenticate('jwt', { session: false }),  (req, res) => {
     Patient.find({}).then((listPatient) => {
         res.send(listPatient);
     }
     );
 });
 
-router.get('/:id',  async (req, res) => {
+router.get('/:id',  passport.authenticate('jwt', { session: false }), async (req, res) => {
     const patient = await Patient.findById(req.params.id)
     res.send(patient);
 } );
 
-router.post('/', (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     // les promisse (then)  (recommender)
     Patient.create(req.body).then((createdUser) => {
         res.send(createdUser);
