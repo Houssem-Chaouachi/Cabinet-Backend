@@ -7,9 +7,6 @@ const secretaire = require('../models/secretaireScheama')
 const { route } = require('./secretairesApi');
 
 
-// router.post('/rdv', (req,res)=>{
-
-// })
 router.post('', async (req, res) => {
     Rdv.create(req.body).then((listeRdv) => {
         res.send(listeRdv)

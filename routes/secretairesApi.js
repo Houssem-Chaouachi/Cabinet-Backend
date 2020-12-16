@@ -69,13 +69,7 @@ router.get('/',   (req, res) => {
             console.log(listSecretaires);
     });
 });
-// heythi hethi fi compte secretaire tkharajli les patient eli ba3thou demande lel secretaire
-// ey ou ijiblek tableau ?
-// nn yji feregh el tableau ama ken na7i el passport yemshi
-// ken nrodou haka yemshi
-// il mouchkla fel passport
-// 7ata haka chay
-// 5aleha bleche
+
 router.get('/request-from-patients', async (req, res) => {
     // async / await   (recommender)
     const sec = await secretaire.findOne({}).populate('patients');
@@ -89,9 +83,7 @@ router.delete('/:id',  passport.authenticate('jwt', { session: false }),async(re
     })
 });
 
-// get hethii eli ta7ti!
-// hadhiya fe compte patien
-// ah le moush hethi hh 
+
 router.post('/affect-patients-to-secretaire/:idpatients', passport.authenticate('jwt', { session: false }), (req, res) => {
     secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
         secretaire.findOne().then((secretaire) => {            

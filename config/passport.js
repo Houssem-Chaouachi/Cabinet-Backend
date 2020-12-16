@@ -37,15 +37,4 @@ module.exports = function(passport){
         } )
     }))
 }
-        // allllllllllo
-// jarrabtou haka melowel w tastitou bel postman mshé yekhi khalitou hh
-// trah jareb
-// ok
-// ch9atlek
-// chayy mahous 9a3ed yekheth fel token fel localstorage
-// w ki n7el compte secretaire mayjiwej el liste mta3 les patients , tatla3li  inathorazed
-// behi jareb bel postman ki ta3mel login b secretair itala3lek token ou nn
-// jareb
-// behi
-// chay 7ata haka chay
-// mafhemthach
+   
