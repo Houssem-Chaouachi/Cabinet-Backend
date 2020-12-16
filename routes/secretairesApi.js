@@ -5,8 +5,7 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 require('../Config/passport')(passport);
-// 7el audio call bel live share
-// kifeh 
+
 //  login
 router.post('/login', (req, res) => {
     const email = req.body.email;
@@ -70,7 +69,7 @@ router.get('/',   (req, res) => {
     });
 });
 
-router.get('/request-from-patients', async (req, res) => {
+router.get('/request-from-patients',  async (req, res) => {
     // async / await   (recommender)
     const sec = await secretaire.findOne({}).populate('patients');
     res.send(sec.patients);
@@ -84,7 +83,7 @@ router.delete('/:id',  passport.authenticate('jwt', { session: false }),async(re
 });
 
 
-router.post('/affect-patients-to-secretaire/:idpatients', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
     secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
         secretaire.findOne().then((secretaire) => {            
             res.send(secretaire);
@@ -95,7 +94,7 @@ router.post('/affect-patients-to-secretaire/:idpatients', passport.authenticate(
     });
 });
 
-router.delete('/remove-patients-from-secretaire/:idPatients',  passport.authenticate('jwt', { session: false }), (req, res) => {
+router.delete('/remove-patients-from-secretaire/:idPatients',   (req, res) => {
     secretaire.findOneAndUpdate({ $pull: { patients: req.params.idPatients } }).then(() => {
         secretaire.findOne().then((removedPatient) => {
             res.send(removedPatient);
