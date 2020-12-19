@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('../Config/passport')(passport);
 
-router.get('/',  passport.authenticate('jwt', { session: false }),  (req, res) => {
+router.get('/',    (req, res) => {
     Patient.find({}).then((listPatient) => {
         res.send(listPatient);
     }
@@ -41,7 +41,7 @@ router.post('/login', (req, res) => {
             }
             console.log(isMatch);
             if (isMatch) {
-                const token = jwt.sign(user.toJSON(), 'token', {
+                const token = jwt.sign(user.toJSON(), '123456789', {
                     expiresIn: 604800 //1 week
                 });
 

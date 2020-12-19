@@ -76,9 +76,11 @@ router.delete('/listeRdv/:id', async(req, res) => {
     });
 });
 router.put('/listeRdv/:id',  async (req, res)  => {
+  
     await Rdv.findByIdAndUpdate(req.params.id, req.body);
     const userRdv = await Rdv.findById(req.params.id);
     res.send(userRdv)
+    
 });
 
 

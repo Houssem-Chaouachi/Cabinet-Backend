@@ -23,7 +23,7 @@ router.post('/login', (req, res) => {
             }
             console.log(isMatch);
             if (isMatch) {
-                const token = jwt.sign(superUser.toJSON(), 'efgh', {
+                const token = jwt.sign(superUser.toJSON(), '123456789', {
                     expiresIn: 604800 //1 week
                 });
 
@@ -69,7 +69,7 @@ router.get('/',   (req, res) => {
     });
 });
 
-router.get('/request-from-patients',  async (req, res) => {
+router.get('/request-from-patients',  passport.authenticate('jwt', { session: false }),  async (req, res) => {
     // async / await   (recommender)
     const sec = await secretaire.findOne({}).populate('patients');
     res.send(sec.patients);
@@ -83,7 +83,7 @@ router.delete('/:id',  passport.authenticate('jwt', { session: false }),async(re
 });
 
 
-router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
+router.post('/affect-patients-to-secretaire/:idpatients',  passport.authenticate('jwt', { session: false }), (req, res) => {
     secretaire.findOneAndUpdate({ $push: { patients: req.params.idpatients }}).then(() => {
         secretaire.findOne().then((secretaire) => {            
             res.send(secretaire);
@@ -94,7 +94,7 @@ router.post('/affect-patients-to-secretaire/:idpatients', (req, res) => {
     });
 });
 
-router.delete('/remove-patients-from-secretaire/:idPatients',   (req, res) => {
+router.delete('/remove-patients-from-secretaire/:idPatients', passport.authenticate('jwt', { session:false}), (req, res) => {
     secretaire.findOneAndUpdate({ $pull: { patients: req.params.idPatients } }).then(() => {
         secretaire.findOne().then((removedPatient) => {
             res.send(removedPatient);
@@ -106,7 +106,7 @@ router.delete('/remove-patients-from-secretaire/:idPatients',   (req, res) => {
 
 
 //profile
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/profile', passport.authenticate('Bearer', { session: false }), (req, res) => {
     res.json({ user: req.user })
 
 });
